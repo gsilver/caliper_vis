@@ -5,7 +5,7 @@ $('.btn').on('click', function(e){
   $(this).attr('disabled',true).attr('class','btn-primary btn');
 });
 
-
+var mode = 1;
 
 var raw = [];
 var userCounts = [];
@@ -16,6 +16,7 @@ $.getJSON('raw.json', {})
   });
 
 $('#p1').on('click', function(e) {
+  mode = 1;
   var userCounts = [{
     'key': 'x:t, y:i/t',
     'values': []
@@ -48,6 +49,7 @@ $('#p1').on('click', function(e) {
 });
 
 $('#p2').on('click', function(e) {
+  mode = 2;
   var userCounts = [{
     'key': 'x:t,y:i',
     'values': []
@@ -98,8 +100,19 @@ function update(userCounts) {
       console.log('render complete');
     });
 
-    chart.xAxis.tickFormat(d3.format('.02f'));
-    chart.yAxis.tickFormat(d3.format('.02f'));
+
+    chart.xAxis.tickFormat(function(d, i) {
+      return Math.round(d);
+    });
+
+    if (mode ===1){
+      chart.yAxis.tickFormat(d3.format('.02f'));
+    } else {
+      chart.yAxis.tickFormat(function(d, i) {
+        return Math.round(d);
+      });
+
+    }
 
     d3.select('#chart svg')
       .datum(userCounts)

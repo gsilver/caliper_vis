@@ -2,6 +2,7 @@ historicalBarChart = [{
   values: []
 }];
 var raw = [];
+var mode = 'num';
 
 $.getJSON('raw.json', {})
   .done(function(data) {
@@ -21,7 +22,7 @@ $('.btn').on('click', function(e){
 
 
 $('#user_time_spent').on('click', function(e) {
-
+  mode = 'time';
   $('#headLine').text('Average time spent on item by student');
   $('#code').text('x: students, y: average time per question');
   historicalBarChart[0].values = [];
@@ -63,6 +64,7 @@ $('#user_time_spent').on('click', function(e) {
 
 
 $('#user_correct').on('click', function(e) {
+  mode = 'percent';
   $('#headLine').text('Percent correct answers by student');
   $('#code').text('x: students, y: % correct');
   historicalBarChart[0].values = [];
@@ -95,6 +97,7 @@ $('#user_correct').on('click', function(e) {
 });
 
 $('#user_counts').on('click', function(e) {
+  mode = 'num';
   historicalBarChart[0].values = [];
   userCounts = [];
   $('#headLine').text('Questions answered by student');
@@ -129,6 +132,7 @@ $('#user_counts').on('click', function(e) {
 
 
 $('#pop_sets').on('click', function(e) {
+  mode = 'num';
   historicalBarChart[0].values = [];
   //userCounts = [];
   $('#headLine').text('Popular sets');
@@ -151,6 +155,7 @@ $('#pop_sets').on('click', function(e) {
 
 
 $('#inc_sets').on('click', function(e) {
+  mode = 'percent';
   historicalBarChart[0].values = [];
   $('#headLine').text('Incorrect per set');
   $('#code').text('x: problem sets, y: % questions answered incorrectly');
@@ -195,9 +200,10 @@ $('#inc_sets').on('click', function(e) {
 });
 
 $('#totals_course').on('click', function(e) {
+  mode = 'num';
   historicalBarChart[0].values = [];
   $('#headLine').text('Course total answers');
-  $('#code').text('x: courses, y: % questions answered');
+  $('#code').text('x: courses, y: questions answered');
   var courses = _.uniq(_.map(raw, function(item){ return  item.class; }));
   var coursesSorted = _.sortBy(courses, function(course) {
     return course;
@@ -216,6 +222,7 @@ $('#totals_course').on('click', function(e) {
 
 
 $('#corr_sets').on('click', function(e) {
+  mode = 'percent';
   historicalBarChart[0].values = [];
   //userCounts = [];
   $('#headLine').text('Incorrect per set');
@@ -278,12 +285,19 @@ function update() {
     chart.xAxis.tickFormat(function(d, i) {
       return d;
     });
+
     chart.yAxis.tickFormat(function(d, i) {
-      return Math.round(d);//xxx
+      if(mode ==='num'){
+        return Math.round(d);
+      }
+      if (mode ==='percent') {
+        return d + ' %'
+      }
+      if (mode ==='time') {
+        return d + ' s'
+      }
+
     });
-
-
-
     d3.select('#chart1 svg')
       .datum(historicalBarChart)
       .call(chart);

@@ -33,6 +33,10 @@ $.getJSON('raw.json', {})
         .showValues(false)
         .duration(250);
       chart.xAxis.rotateLabels(-45);
+      chart.yAxis.tickFormat(function(d, i) {
+        return Math.round(d);
+      });
+
 
       d3.select('#chart svg')
         .datum(daysObjectNVD3)

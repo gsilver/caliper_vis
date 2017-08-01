@@ -69,8 +69,9 @@ $.getJSON('raw.json', {})
           .stacked(true)
           .staggerLabels(true)
           .reduceXTicks(false);
-
-
+          chart.yAxis.tickFormat(function(d, i) {
+            return Math.round(d);
+          });
         var svg = d3.select('#chart svg').datum(grouped_data);
 
         svg.transition().duration(0).call(chart);
